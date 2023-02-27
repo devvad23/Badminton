@@ -56,6 +56,7 @@ dfHres = df.applymap(lambda c : showHre(c)).transpose()
 
 header = "Disponibilités dès "+formatFRHre(hreLookFrom)+" (pour "+str(timeLong)+"h):"
 #print(header) #check
+st.text(header)
 for i in dfHres.columns:
     displayLine = ""
     displayDay = formatFRDate(i)
