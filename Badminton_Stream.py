@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-st.title('Badminton')
+st.header('Disponibilités')
 
 #############
 #parameters
@@ -17,16 +17,26 @@ jDate = datetime.now().strftime("%Y-%m-%d")
 #print(jDate) #check
 
 if timeLong == 1:
-    jTime = 53896
+    jTimeBad = 53896
 else:
-    jTime = 64693
+    jTimeBad = 64693
 
+if timeLong == 1:
+    jTimeSquash = 53899
+#else:    jTimeBad = 64693
 
-link = 'https://node.agenda.ch/api_front/pro_users/availabilities?company_id=7910&locale=fr&date=MyjDate&range=3months&bookables%5B0%5D%5Bid%5D=MyjTime&bookables%5B0%5D%5Btype%5D=Service&agenda_id=anyone&as_minutes=true&location_ids%5B0%5D=1047&simultaneous_count=1&returning_customer=true&_=1677363720387'
+linkReservBad = 'https://book.agenda.ch/services/pick/'+str(jTimeBad)+'?companyId=7910'
+linkReservSquash = 'https://book.agenda.ch/services/pick/'+str(jTimeSquash)+'?companyId=7910'
+
+linkBad = 'https://node.agenda.ch/api_front/pro_users/availabilities?company_id=7910&locale=fr&date=MyjDate&range=3months&bookables%5B0%5D%5Bid%5D=MyjTime&bookables%5B0%5D%5Btype%5D=Service&agenda_id=anyone&as_minutes=true&location_ids%5B0%5D=1047&simultaneous_count=1&returning_customer=true&_=1677363720387'
+linkSquash = 'https://node.agenda.ch/api_front/pro_users/availabilities?company_id=7910&locale=fr&date=MyjDate&range=3months&bookables%5B0%5D%5Bid%5D=MyjTime&bookables%5B0%5D%5Btype%5D=Service&agenda_id=anyone&as_minutes=true&location_ids%5B0%5D=1047&simultaneous_count=1&returning_customer=true&_=1677363720387'
        
-link = link.replace('MyjDate',str(jDate))
-link = link.replace('MyjTime',str(jTime))
+linkBad = linkBad.replace('MyjDate',str(jDate))
+linkBad = linkBad.replace('MyjTime',str(jTimeBad))
+linkSquash = linkSquash.replace('MyjDate',str(jDate))
+linkSquash = linkSquash.replace('MyjTime',str(jTimeSquash))
 #print(link) #check
+
         
 def showHre(cell):    
     if str(type(cell)).strip()!="<class 'NoneType'>":
@@ -48,15 +58,15 @@ def formatFRHre(h):
 #print(formatFRDate(jDate)) #check
 #print(header) #check
 
-df = pd.read_json(link,orient='index')
+df = pd.read_json(linkBad,orient='index')
 #print(df.head(10)) #check
 
 dfHres = df.applymap(lambda c : showHre(c)).transpose()
 #print(dfHres.head(10)) #check
 
-header = "Disponibilités dès "+formatFRHre(hreLookFrom)+" (pour "+str(timeLong)+"h):"
+headerBad = "**_Badminton_** dès "+formatFRHre(hreLookFrom)+" (pour "+str(timeLong)+"h):"
 #print(header) #check
-st.text(header)
+st.markdown(headerBad)
 for i in dfHres.columns:
     displayLine = ""
     displayDay = formatFRDate(i)
@@ -75,7 +85,37 @@ for i in dfHres.columns:
     if len(displayLine)>0:
         #print(displayLine)
         st.text(displayLine)
-linkReserv = 'https://book.agenda.ch/services/pick/'+str(jTime)+'?companyId=7910'
+
+st.write("Réserve Badminton: "+linkReservBad)	
+
+
+df = pd.read_json(linkSquash,orient='index')
+#print(df.head(10)) #check
+
+dfHres = df.applymap(lambda c : showHre(c)).transpose()
+#print(dfHres.head(10)) #check
+headerSquash = "**_Squash_** dès "+formatFRHre(hreLookFrom)+" (pour "+str(timeLong)+"h):"		
+#print(headerSquash) #check
+st.write(headerSquash)
+for i in dfHres.columns:
+    displayLine = ""
+    displayDay = formatFRDate(i)
+    dayHres = dfHres[i]    
+    bDisplayedDay = False
+    
+    
+    for hre in dayHres:
+        if hre.is_integer :
+            if hre>=hreLookFrom:
+                if not bDisplayedDay:
+                    displayLine = displayDay+": "+formatFRHre(hre)
+                    bDisplayedDay = True
+                else:
+                    displayLine = displayLine+", "+formatFRHre(hre)
+    if len(displayLine)>0:
+        #print(displayLine)
+        st.text(displayLine)
+		
 #print("Reserve : ",linkReserv) #check
-st.write("Réserve : "+linkReserv)
+st.write("Réserve Squash: "+linkReservSquash)
 
