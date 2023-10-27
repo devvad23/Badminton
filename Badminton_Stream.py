@@ -2,6 +2,16 @@ import streamlit as st
 #from streamlit_modal import Modal
 import pandas as pd
 import numpy as np
+import os, sys
+
+# install selenium
+@st.experimental_singleton
+def installff():
+  os.system('sbase install geckodriver')
+  os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
+
+_ = installff()
+# END install selenium
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
