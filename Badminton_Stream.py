@@ -1,91 +1,121 @@
-import os
-import shutil
-
 import streamlit as st
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
+import pandas as pd
+import numpy as np
+
+st.header('Disponibilités')
+
+#############
+#parameters
+#############
+hreLookFrom = 17
+timeLong = 1
+
+hreLookFrom = st.slider('A partir de quelle heure ?', min_value=8, max_value=21, value=18, step=1)
+
+from datetime import datetime
+jDate = datetime.now().strftime("%Y-%m-%d")
+#print(jDate) #check
+
+if timeLong == 1:
+    jTimeBad = 53896
+else:
+    jTimeBad = 64693
+
+if timeLong == 1:
+    jTimeSquash = 53899
+#else:    jTimeBad = 64693
+
+linkReservBad = 'https://book.agenda.ch/services/pick/'+str(jTimeBad)+'?companyId=7910'
+linkReservSquash = 'https://book.agenda.ch/services/pick/'+str(jTimeSquash)+'?companyId=7910'
+
+linkBad = 'https://node.agenda.ch/api_front/pro_users/availabilities?company_id=7910&locale=fr&date=MyjDate&range=3months&bookables%5B0%5D%5Bid%5D=MyjTime&bookables%5B0%5D%5Btype%5D=Service&agenda_id=anyone&as_minutes=true&location_ids%5B0%5D=1047&simultaneous_count=1&returning_customer=true&_=1677363720387'
+linkSquash = 'https://node.agenda.ch/api_front/pro_users/availabilities?company_id=7910&locale=fr&date=MyjDate&range=3months&bookables%5B0%5D%5Bid%5D=MyjTime&bookables%5B0%5D%5Btype%5D=Service&agenda_id=anyone&as_minutes=true&location_ids%5B0%5D=1047&simultaneous_count=1&returning_customer=true&_=1677363720387'
+       
+linkBad = linkBad.replace('MyjDate',str(jDate))
+linkBad = linkBad.replace('MyjTime',str(jTimeBad))
+linkSquash = linkSquash.replace('MyjDate',str(jDate))
+linkSquash = linkSquash.replace('MyjTime',str(jTimeSquash))
+#print(link) #check
+
+        
+def showHre(cell):    
+    if str(type(cell)).strip()!="<class 'NoneType'>":
+        dict = cell
+        hre = cell['start']
+        hre = hre / 60
+        return hre
+
+def formatFRDate(d):
+    dmap = {0:'Lun',1:'Mar',2:'Mer',3:'Jeu',4:'Ven',5:'Sam',6:'Dim'}
+    dDate = pd.to_datetime(d)
+    prtDate = dmap[dDate.dayofweek]+" "+dDate.strftime("%d.%m.%Y")
+    return prtDate
+
+def formatFRHre(h):
+    prtHre = str(int(h))+"h"
+    return prtHre
+
+#print(formatFRDate(jDate)) #check
+#print(header) #check
+
+df = pd.read_json(linkBad,orient='index')
+#print(df.head(10)) #check
+
+dfHres = df.applymap(lambda c : showHre(c)).transpose()
+#print(dfHres.head(10)) #check
+
+headerBad = "**_Badminton_** dès "+formatFRHre(hreLookFrom)+" (pour "+str(timeLong)+"h):"
+#print(header) #check
+st.markdown(headerBad)
+for i in dfHres.columns:
+    displayLine = ""
+    displayDay = formatFRDate(i)
+    dayHres = dfHres[i]    
+    bDisplayedDay = False
+    
+    
+    for hre in dayHres:
+        if hre.is_integer :
+            if hre>=hreLookFrom:
+                if not bDisplayedDay:
+                    displayLine = displayDay+": "+formatFRHre(hre)
+                    bDisplayedDay = True
+                else:
+                    displayLine = displayLine+", "+formatFRHre(hre)
+    if len(displayLine)>0:
+        #print(displayLine)
+        st.text(displayLine)
+
+st.write("Réserve Badminton: "+linkReservBad)	
 
 
-@st.cache_resource(show_spinner=False)
-def get_logpath():
-    return os.path.join(os.getcwd(), 'selenium.log')
+df = pd.read_json(linkSquash,orient='index')
+#print(df.head(10)) #check
 
+dfHres = df.applymap(lambda c : showHre(c)).transpose()
+#print(dfHres.head(10)) #check
+headerSquash = "**_Squash_** dès "+formatFRHre(hreLookFrom)+" (pour "+str(timeLong)+"h):"		
+#print(headerSquash) #check
+st.write(headerSquash)
+for i in dfHres.columns:
+    displayLine = ""
+    displayDay = formatFRDate(i)
+    dayHres = dfHres[i]    
+    bDisplayedDay = False
+    
+    
+    for hre in dayHres:
+        if hre.is_integer :
+            if hre>=hreLookFrom:
+                if not bDisplayedDay:
+                    displayLine = displayDay+": "+formatFRHre(hre)
+                    bDisplayedDay = True
+                else:
+                    displayLine = displayLine+", "+formatFRHre(hre)
+    if len(displayLine)>0:
+        #print(displayLine)
+        st.text(displayLine)
+		
+#print("Reserve : ",linkReserv) #check
+st.write("Réserve Squash: "+linkReservSquash)
 
-@st.cache_resource(show_spinner=False)
-def get_chromedriver_path():
-    return shutil.which('chromedriver')
-
-
-@st.cache_resource(show_spinner=False)
-def get_webdriver_options():
-    options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--disable-features=NetworkService")
-    options.add_argument("--window-size=1920x1080")
-    options.add_argument("--disable-features=VizDisplayCompositor")
-    return options
-
-
-def get_webdriver_service(logpath):
-    service = Service(
-        executable_path=get_chromedriver_path(),
-        log_output=logpath,
-    )
-    return service
-
-
-def delete_selenium_log(logpath):
-    if os.path.exists(logpath):
-        os.remove(logpath)
-
-
-def show_selenium_log(logpath):
-    if os.path.exists(logpath):
-        with open(logpath) as f:
-            content = f.read()
-            st.code(body=content, language='log', line_numbers=True)
-    else:
-        st.warning('No log file found!')
-
-
-def run_selenium(logpath):
-    name = str()
-    with webdriver.Chrome(options=get_webdriver_options(), service=get_webdriver_service(logpath=logpath)) as driver:
-        url = "https://www.unibet.fr/sport/football/europa-league/europa-league-matchs"
-        driver.get(url)
-        xpath = '//*[@class="ui-mainview-block eventpath-wrapper"]'
-        # Wait for the element to be rendered:
-        element = WebDriverWait(driver, 10).until(lambda x: x.find_elements(by=By.XPATH, value=xpath))
-        name = element[0].get_property('attributes')[0]['name']
-    return name
-
-
-if __name__ == "__main__":
-    logpath=get_logpath()
-    delete_selenium_log(logpath=logpath)
-    st.set_page_config(page_title="Selenium Test", page_icon='✅',
-        initial_sidebar_state='collapsed')
-    st.title('🔨 Selenium on Streamlit Cloud')
-    st.markdown('''This app is only a very simple test for **Selenium** running on **Streamlit Cloud** runtime.<br>
-        The suggestion for this demo app came from a post on the Streamlit Community Forum.<br>
-        <https://discuss.streamlit.io/t/issue-with-selenium-on-a-streamlit-app/11563><br><br>
-        This is just a very very simple example and more a proof of concept.<br>
-        A link is called and waited for the existence of a specific class to read a specific property.
-        If there is no error message, the action was successful.
-        Afterwards the log file of chromium is read and displayed.
-        ''', unsafe_allow_html=True)
-    st.markdown('---')
-
-    st.balloons()
-    if st.button('Start Selenium run'):
-        st.warning('Selenium is running, please wait...')
-        result = run_selenium(logpath=logpath)
-        st.info(f'Result -> {result}')
-        st.info('Successful finished. Selenium log file is shown below...')
-        show_selenium_log(logpath=logpath)
