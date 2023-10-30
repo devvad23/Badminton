@@ -55,6 +55,7 @@ def get_webdriver_options():
 def get_webdriver_service(logpath):
     service = Service(
         executable_path=get_chromedriver_path(),
+        ChromeDriverManager().install(),
         log_output=logpath,
     )
     return service
