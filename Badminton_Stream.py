@@ -61,7 +61,7 @@ def show_selenium_log(logpath):
 
 def run_selenium(logpath):
     name = str()
-    with webdriver.Chrome('/usr/bin/chromedriver', options=get_webdriver_options(), service=get_webdriver_service(logpath=logpath)) as driver:
+    with webdriver.Chrome(options=get_webdriver_options(), service=get_webdriver_service(logpath=logpath)) as driver:
                           #, executable_path=get_chromedriver_path()) as driver:
         url = "https://www.unibet.fr/sport/football/europa-league/europa-league-matchs"
         driver.get(url)
@@ -98,7 +98,7 @@ if __name__ == "__main__":
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-dev-shm-usage')
-    d = webdriver.Chrome(executable_path='/usr/bin/chromedriver', options=chrome_options)
+    d = webdriver.Chrome(options=chrome_options,service=Service(executable_path='/usr/bin/chromedriver/chromedriver.exe'))
     
 
     st.balloons()
