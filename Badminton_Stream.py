@@ -251,7 +251,8 @@ if __name__ == "__main__":
         mode_payment_text = mode_payment_online
         
         options = Options()
-        options.add_argument("--headless=new")
+        #options.add_argument("--headless=new")
+        options.add_argument("--headless")
         browser = webdriver.Firefox(options=options)
 
         if sport_choosed == "bad":
