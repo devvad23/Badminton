@@ -33,6 +33,7 @@ def get_webdriver_options():
     options.add_argument("--disable-features=NetworkService")
     options.add_argument("--window-size=1920x1080")
     options.add_argument("--disable-features=VizDisplayCompositor")
+    options.binary_location=r'/usr/bin/chromedriver'
     return options
 
 
