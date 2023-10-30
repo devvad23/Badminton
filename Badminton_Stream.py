@@ -116,7 +116,8 @@ if __name__ == "__main__":
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-dev-shm-usage')
-    d = webdriver.Chrome(options=chrome_options,service=Service(executable_path='/usr/bin/chromedriver/chromedriver.exe'))
+    d = webdriver.Chrome()
+    #options=chrome_options,service=Service(executable_path='/usr/bin/chromedriver/chromedriver.exe'))
     
 
     st.balloons()
