@@ -83,7 +83,7 @@ if __name__ == "__main__":
     st.markdown('---')
 
     res=get_chromedriver_path()
-    print("get_chromedriver_path",res)
+    st.write("get_chromedriver_path",res)
 
     st.balloons()
     if st.button('Start Selenium run'):
