@@ -233,8 +233,8 @@ def get_webdriver_service(logpath):
 def run_selenium():
     #logpath):
     name = str()
-    with webdriver.Chrome(options=get_webdriver_options(), ) as driver:
-        #service=get_webdriver_service(logpath=logpath)) as driver:
+    with webdriver.Chrome(options=get_webdriver_options()) as driver:
+        #, service=get_webdriver_service(logpath=logpath)) as driver:
         url = "https://www.unibet.fr/sport/football/europa-league/europa-league-matchs"
         driver.get(url)
         xpath = '//*[@class="ui-mainview-block eventpath-wrapper"]'
