@@ -30,7 +30,7 @@ def get_program_path(program):
 @st.cache_resource(show_spinner=False)
 def get_webdriver_options():
     options = Options()
-    options.add_argument("--no-sandbox")
+    #options.add_argument("--no-sandbox")
     #options.add_argument("--headless")
     #options.add_argument("--disable-dev-shm-usage")
     #options.add_argument("--disable-gpu")
@@ -38,6 +38,17 @@ def get_webdriver_options():
     #options.add_argument("--window-size=1920x1080")
     #options.add_argument("--disable-features=VizDisplayCompositor")
     #options.binary_location=r'/usr/bin/chromedriver'
+
+    #https://stackoverflow.com/questions/56637973/how-to-fix-selenium-devtoolsactiveport-file-doesnt-exist-exception-in-python
+    options.add_experimental_option("prefs", {"profile.managed_default_content_settings.images": 2})
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-setuid-sandbox")
+    options.add_argument("--remote-debugging-port=9222")  # this
+    options.add_argument("--disable-dev-shm-using")
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-gpu")
+    options.add_argument("start-maximized")
+    options.add_argument("disable-infobars")
     return options
 
 
