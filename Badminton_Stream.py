@@ -17,6 +17,10 @@ def get_logpath():
 @st.cache_resource(show_spinner=False)
 def get_chromedriver_path():
     return shutil.which('chromedriver')
+    
+@st.cache_resource(show_spinner=False)
+def get_firefoxdriver_path():
+    return shutil.which('firefoxdriver')
 
 
 @st.cache_resource(show_spinner=False)
@@ -84,6 +88,11 @@ if __name__ == "__main__":
 
     res=get_chromedriver_path()
     st.write("get_chromedriver_path",res)
+    
+    res=get_firefoxdriver_path()
+    st.write("get_firefoxdriver_path",res)
+
+    
 
     st.balloons()
     if st.button('Start Selenium run'):
