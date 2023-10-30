@@ -26,14 +26,14 @@ def get_firefoxdriver_path():
 @st.cache_resource(show_spinner=False)
 def get_webdriver_options():
     options = Options()
-    options.add_argument("--headless")
     options.add_argument("--no-sandbox")
+    options.add_argument("--headless")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
     options.add_argument("--disable-features=NetworkService")
     options.add_argument("--window-size=1920x1080")
     options.add_argument("--disable-features=VizDisplayCompositor")
-    options.binary_location=r'/usr/bin/chromedriver'
+    #options.binary_location=r'/usr/bin/chromedriver'
     return options
 
 
@@ -61,7 +61,7 @@ def show_selenium_log(logpath):
 
 def run_selenium(logpath):
     name = str()
-    with webdriver.Chrome(options=get_webdriver_options(), service=get_webdriver_service(logpath=logpath)) as driver:
+    with webdriver.Chrome('/usr/bin/chromedriver', options=get_webdriver_options(), service=get_webdriver_service(logpath=logpath)) as driver:
                           #, executable_path=get_chromedriver_path()) as driver:
         url = "https://www.unibet.fr/sport/football/europa-league/europa-league-matchs"
         driver.get(url)
