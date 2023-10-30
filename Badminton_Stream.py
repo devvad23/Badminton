@@ -154,7 +154,7 @@ def get_reserv_week(date_to_find):
     date_picker.click()
 
     # TODO : date ==> "Choose jour jj mois aaaa" (!case sensitive! user upper)
-    #date_to_find = date "Choose vendredi 27 octobre 2023"
+    #date_to_find = date "Choose vendredi 3 novembre 2023"
     # date_class_name = "react-datepicker__day available-0-2-256 day-0-2-253 react-datepicker__day--025"
     
     elmnts = browser.find_elements(By.CSS_SELECTOR, '*')
@@ -235,9 +235,9 @@ if __name__ == "__main__":
         print(sport_choosed+" the "+date_choosed+" at "+hre_choosed)
 
         # define variables
-        date_format1 = "Mar 31.10.2023"
-        date_format2 = "MAR. 31"
-        date_format3 = "Choose mardi 31 octobre 2023"
+        date_format1 = "Ven 03.11.2023"
+        date_format2 = "VEN. 03"
+        date_format3 = "Choose vendredi 3 novembre 2023"
         hre_format = hre_choosed+"h"
         email_reserv = "test@test.com"
 
