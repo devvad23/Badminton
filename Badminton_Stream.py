@@ -109,8 +109,7 @@ if __name__ == "__main__":
     res=get_program_path(p)
     st.write(p,res)
     
-
-    st.write(os.environ["PATH"])
+    #st.write(os.environ["PATH"])
     
     chrome_options = Options()
     chrome_options.add_argument('--no-sandbox')
