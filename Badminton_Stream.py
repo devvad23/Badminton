@@ -93,7 +93,12 @@ if __name__ == "__main__":
     
     res=get_firefoxdriver_path()
     st.write("get_firefoxdriver_path",res)
-
+    
+chrome_options = Options()
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--disable-dev-shm-usage')
+d = webdriver.Chrome('/usr/bin/chromedriver',chrome_options=chrome_options)
     
 
     st.balloons()
