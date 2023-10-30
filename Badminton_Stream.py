@@ -21,6 +21,10 @@ def get_chromedriver_path():
 @st.cache_resource(show_spinner=False)
 def get_firefoxdriver_path():
     return shutil.which('firefoxdriver')
+    
+@st.cache_resource(show_spinner=False)
+def get_program_path(program):
+    return shutil.which(program)
 
 
 @st.cache_resource(show_spinner=False)
@@ -96,6 +100,11 @@ if __name__ == "__main__":
     
     res=get_firefoxdriver_path()
     st.write("get_firefoxdriver_path",res)
+
+    p='firefox'
+    res=get_program_path(p)
+    st.write(p,res)
+    
 
     st.write(os.environ["PATH"])
     
