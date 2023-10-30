@@ -265,7 +265,9 @@ if __name__ == "__main__":
     #############
     # st.write("<a href='#/date=25' id='my-link'>Réserve</a>", unsafe_allow_html=True, on_click=run_reserv(25,19))
     # st.write("Réserve: ",linkBad) #on_click=run_reserv('25.10.2023','19'))
-    result = run_selenium() #logpath=logpath)
+    result = run_selenium() 
+    #logpath=logpath)
+    print("Result:",result)
 
 
     urlParams = st.experimental_get_query_params()
