@@ -88,11 +88,16 @@ if __name__ == "__main__":
         ''', unsafe_allow_html=True)
     st.markdown('---')
 
+    ########################################
+    ## CHECKS
+    ########################################
     res=get_chromedriver_path()
     st.write("get_chromedriver_path",res)
     
     res=get_firefoxdriver_path()
     st.write("get_firefoxdriver_path",res)
+
+    st.write(os.environ["PATH"])
     
     chrome_options = Options()
     chrome_options.add_argument('--no-sandbox')
