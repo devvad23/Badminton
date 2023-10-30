@@ -200,6 +200,48 @@ def get_reserv_date(date, hre):
             return l
     return None
 
+
+#############
+# streamlit related
+#############
+
+@st.cache_resource(show_spinner=False)
+def get_chromedriver_path():
+    return shutil.which('chromedriver')
+
+
+@st.cache_resource(show_spinner=False)
+def get_webdriver_options():
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-features=NetworkService")
+    options.add_argument("--window-size=1920x1080")
+    options.add_argument("--disable-features=VizDisplayCompositor")
+    return options
+
+
+def get_webdriver_service(logpath):
+    service = Service(
+        executable_path=get_chromedriver_path(),
+        log_output=logpath,
+    )
+    return service
+
+def run_selenium():
+    #logpath):
+    name = str()
+    with webdriver.Chrome(options=get_webdriver_options(), ) as driver:
+        #service=get_webdriver_service(logpath=logpath)) as driver:
+        url = "https://www.unibet.fr/sport/football/europa-league/europa-league-matchs"
+        driver.get(url)
+        xpath = '//*[@class="ui-mainview-block eventpath-wrapper"]'
+        # Wait for the element to be rendered:
+        element = WebDriverWait(driver, 10).until(lambda x: x.find_elements(by=By.XPATH, value=xpath))
+        name = element[0].get_property('attributes')[0]['name']
+    return name
       
 # linkBad = linkBad.replace('MyjDate',str(jDate))
 # linkBad = linkBad.replace('MyjTime',str(jTimeBad))
@@ -223,6 +265,7 @@ if __name__ == "__main__":
     #############
     # st.write("<a href='#/date=25' id='my-link'>Réserve</a>", unsafe_allow_html=True, on_click=run_reserv(25,19))
     # st.write("Réserve: ",linkBad) #on_click=run_reserv('25.10.2023','19'))
+    result = run_selenium() #logpath=logpath)
 
 
     urlParams = st.experimental_get_query_params()
