@@ -1,4 +1,0 @@
-chromium
-chromium-driver
-firefox
-firefox-driver
